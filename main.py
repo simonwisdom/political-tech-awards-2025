@@ -132,7 +132,7 @@ def render_explorer():
             # Display screenshot if available
             if website['screenshot_path']:
                 try:
-                    st.image(website['screenshot_path'], use_column_width=True)
+                    st.image(website['screenshot_path'], width=None)  # None means full width
                 except Exception as e:
                     st.error(f"Error loading screenshot: {str(e)}")
             
