@@ -48,6 +48,82 @@ def render_login():
 
 def render_explorer():
     """Render project explorer tab."""
+    # Custom CSS for fixed layout and scrollable columns
+    st.markdown("""
+        <style>
+            /* Main container styles */
+            .main > div {
+                max-width: 100% !important;
+                padding: 0 1rem;
+            }
+            
+            /* Column container styles */
+            [data-testid="stHorizontalBlock"] {
+                width: 100%;
+                gap: 1rem;
+                padding: 1rem 0;
+            }
+            
+            /* All columns base styles */
+            [data-testid="stHorizontalBlock"] > div {
+                min-width: 0;  /* Allow columns to shrink below content size */
+                flex-shrink: 1;  /* Allow columns to shrink */
+            }
+            
+            /* Left column scrollable container */
+            [data-testid="stHorizontalBlock"] > div:first-child {
+                overflow: auto !important;
+                height: calc(100vh - 150px);
+                flex: 1;
+            }
+            
+            /* Middle column */
+            [data-testid="stHorizontalBlock"] > div:nth-child(2) {
+                overflow: auto !important;
+                height: calc(100vh - 150px);
+                flex: 1.5;
+            }
+            
+            /* Right column */
+            [data-testid="stHorizontalBlock"] > div:last-child {
+                overflow: auto !important;
+                height: calc(100vh - 150px);
+                flex: 1.5;
+            }
+            
+            /* Button styles */
+            div.stButton > button {
+                width: 100%;
+                text-align: left;
+                padding: 8px;
+                background-color: #f0f5f0;
+                color: #2c4a2c;
+                border: 1px solid #c5d6c5;
+                border-radius: 4px;
+                margin-bottom: 8px;
+                font-size: 0.9em;
+            }
+            div.stButton > button:hover {
+                background-color: #e5efe5;
+                border-color: #86a886;
+            }
+            div.stButton > button:active {
+                background-color: #d8e6d8;
+            }
+            
+            /* Hide scrollbar for Chrome, Safari and Opera */
+            [data-testid="stHorizontalBlock"] > div::-webkit-scrollbar {
+                display: none;
+            }
+            
+            /* Hide scrollbar for IE, Edge and Firefox */
+            [data-testid="stHorizontalBlock"] > div {
+                -ms-overflow-style: none;  /* IE and Edge */
+                scrollbar-width: none;  /* Firefox */
+            }
+        </style>
+    """, unsafe_allow_html=True)
+    
     st.header("Project Explorer")
     
     # Load website data
@@ -58,8 +134,8 @@ def render_explorer():
         st.error(f"Error loading website data: {str(e)}")
         return
     
-    # Create three columns layout
-    col1, col2, col3 = st.columns([1, 1.5, 1.5])
+    # Create three columns layout with explicit ratios
+    col1, col2, col3 = st.columns([1, 1.5, 1.5], gap="small")
     
     with col1:
         st.subheader("Projects")
@@ -85,35 +161,6 @@ def render_explorer():
             filtered_df = df[mask]
         else:
             filtered_df = df
-        
-        # Custom CSS for scrollable container
-        st.markdown("""
-            <style>
-                div[data-testid="column"] > div:has(div.stButton) {
-                    height: 600px;
-                    overflow-y: scroll;
-                    padding-right: 10px;
-                }
-                div.stButton > button {
-                    width: 100%;
-                    text-align: left;
-                    padding: 8px;
-                    background-color: #f0f5f0;
-                    color: #2c4a2c;
-                    border: 1px solid #c5d6c5;
-                    border-radius: 4px;
-                    margin-bottom: 8px;
-                    font-size: 0.9em;
-                }
-                div.stButton > button:hover {
-                    background-color: #e5efe5;
-                    border-color: #86a886;
-                }
-                div.stButton > button:active {
-                    background-color: #d8e6d8;
-                }
-            </style>
-        """, unsafe_allow_html=True)
         
         # Display website list with regular Streamlit buttons
         for _, row in filtered_df.iterrows():
